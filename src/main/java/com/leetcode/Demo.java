@@ -15,7 +15,7 @@ public class Demo {
 //        testZeroEvenOdd(10);
 //        testFizzBuzz(100);
 //        testH2O("HHHHHHHOOOOOOOHHHHHHH");
-        testDiningPhilosophers(1);
+//        testDiningPhilosophers(1);
     }
 
     private static void testFoo() {

@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class DiningPhilosophers {
 
-    private final ReentrantLock[] forks = {
+    private final Semaphore[] forks = {
             new Semaphore(1),
             new Semaphore(1),
             new Semaphore(1),
