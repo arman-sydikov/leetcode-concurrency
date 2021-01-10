@@ -1,61 +1,55 @@
 package com.leetcode.concurrency;
 
 import java.util.LinkedList;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Queue;
 
 /**
- * @author 阿尔曼
+ * 1188. Design Bounded Blocking Queue
+ * https://leetcode.com/problems/design-bounded-blocking-queue
+ *
+ * @author ARMAN
  */
 public class BoundedBlockingQueue {
 
+    /**
+     * FIFO queue
+     */
+    private final Queue<Integer> queue;
+
+    /**
+     * Maximum capacity of the queue
+     */
     private final int capacity;
-    private final LinkedList<Integer> queue;
-    private final ReentrantLock lock;
-    private final Condition empty;
-    private final Condition full;
 
     public BoundedBlockingQueue(int capacity) {
         this.capacity = capacity;
         this.queue = new LinkedList<>();
-        this.lock = new ReentrantLock();
-        this.empty = this.lock.newCondition();
-        this.full = this.lock.newCondition();
     }
 
     public void enqueue(int element) throws InterruptedException {
-        lock.lock();
-        try {
+        synchronized (this) {
             while (queue.size() == capacity) {
-                full.await();
+                wait();
             }
             queue.add(element);
-            empty.signal();
-        } finally {
-            lock.unlock();
+            notify();
         }
     }
 
     public int dequeue() throws InterruptedException {
-        lock.lock();
-        try {
+        synchronized (this) {
             while (queue.size() == 0) {
-                empty.await();
+                wait();
             }
-            int first = queue.pop();
-            full.signal();
+            int first = queue.remove();
+            notify();
             return first;
-        } finally {
-            lock.unlock();
         }
     }
 
     public int size() {
-        lock.lock();
-        try {
+        synchronized (this) {
             return queue.size();
-        } finally {
-            lock.unlock();
         }
     }
 }

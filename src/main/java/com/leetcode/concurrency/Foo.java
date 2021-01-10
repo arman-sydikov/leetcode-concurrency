@@ -1,12 +1,17 @@
 package com.leetcode.concurrency;
 
+import java.util.concurrent.Semaphore;
+
 /**
- * @author 阿尔曼
+ * 1114. Print in Order
+ * https://leetcode.com/problems/print-in-order
+ *
+ * @author ARMAN
  */
 public class Foo {
 
-    private volatile boolean firstFinished = false;
-    private volatile boolean secondFinished = false;
+    private final Semaphore second = new Semaphore(0);
+    private final Semaphore third = new Semaphore(0);
 
     public Foo() {
 
@@ -14,27 +19,20 @@ public class Foo {
 
     public void first(Runnable printFirst) throws InterruptedException {
 
-        // printFirst.run() outputs "first". Do not change or remove this line.
         printFirst.run();
-        firstFinished = true;
+        second.release();
     }
 
     public void second(Runnable printSecond) throws InterruptedException {
 
-        while (!firstFinished) {
-            Thread.sleep(100);
-        }
-        // printSecond.run() outputs "second". Do not change or remove this line.
+        second.acquire();
         printSecond.run();
-        secondFinished = true;
+        third.release();
     }
 
     public void third(Runnable printThird) throws InterruptedException {
 
-        while (!secondFinished) {
-            Thread.sleep(100);
-        }
-        // printThird.run() outputs "third". Do not change or remove this line.
+        third.acquire();
         printThird.run();
     }
 }

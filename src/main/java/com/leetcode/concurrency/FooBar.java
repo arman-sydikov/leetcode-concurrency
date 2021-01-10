@@ -1,17 +1,29 @@
 package com.leetcode.concurrency;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.Semaphore;
 
 /**
- * @author 阿尔曼
+ * 1115. Print FooBar Alternately
+ * https://leetcode.com/problems/print-foobar-alternately
+ *
+ * @author ARMAN
  */
 public class FooBar {
-    private int n;
-    private final ReentrantLock lock = new ReentrantLock();
-    private final Condition condition = lock.newCondition();
-    private final AtomicBoolean odd = new AtomicBoolean(true);
+
+    /**
+     * Number of times to output "foobar"
+     */
+    private final int n;
+
+    /**
+     * Semaphore for thread that needs to output "foo"
+     */
+    private final Semaphore foo = new Semaphore(1);
+
+    /**
+     * Semaphore for thread that needs to output "bar"
+     */
+    private final Semaphore bar = new Semaphore(0);
 
     public FooBar(int n) {
         this.n = n;
@@ -20,41 +32,18 @@ public class FooBar {
     public void foo(Runnable printFoo) throws InterruptedException {
 
         for (int i = 0; i < n; i++) {
-
-            synchronized (this) {
-                wait();
-            }
-            lock.lock();
-            try {
-                while (!odd.get()) {
-                    condition.await();
-                }
-                // printFoo.run() outputs "foo". Do not change or remove this line.
-                printFoo.run();
-                odd.set(false);
-                condition.signal();
-            } finally {
-                lock.unlock();
-            }
+            foo.acquire();
+            printFoo.run();
+            bar.release();
         }
     }
 
     public void bar(Runnable printBar) throws InterruptedException {
 
         for (int i = 0; i < n; i++) {
-
-            lock.lock();
-            try {
-                while (odd.get()) {
-                    condition.await();
-                }
-                // printBar.run() outputs "bar". Do not change or remove this line.
-                printBar.run();
-                odd.set(true);
-                condition.signal();
-            } finally {
-                lock.unlock();
-            }
+            bar.acquire();
+            printBar.run();
+            foo.release();
         }
     }
 }

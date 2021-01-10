@@ -4,12 +4,26 @@ import java.util.concurrent.Phaser;
 import java.util.concurrent.Semaphore;
 
 /**
- * @author 阿尔曼
+ * 1117. Building H2O
+ * https://leetcode.com/problems/building-h2o
+ *
+ * @author ARMAN
  */
 public class H2O {
 
+    /**
+     * Semaphore for thread that needs to output "O"
+     */
     private final Semaphore oxygen = new Semaphore(1);
+
+    /**
+     * Semaphore for thread that needs to output "H"
+     */
     private final Semaphore hydrogen = new Semaphore(2);
+
+    /**
+     * Phaser
+     */
     private final Phaser phaser = new Phaser(3);
 
     public H2O() {

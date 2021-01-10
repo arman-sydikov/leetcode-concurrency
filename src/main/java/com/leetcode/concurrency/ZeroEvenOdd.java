@@ -4,14 +4,32 @@ import java.util.concurrent.Semaphore;
 import java.util.function.IntConsumer;
 
 /**
- * @author 阿尔曼
+ * 1116. Print Zero Even Odd
+ * https://leetcode.com/problems/print-zero-even-odd
+ *
+ * @author ARMAN
  */
 public class ZeroEvenOdd {
-    private int n;
-    private final Semaphore zero = new Semaphore(1);
-    private final Semaphore odd = new Semaphore(0);
-    private final Semaphore even = new Semaphore(0);
 
+    /**
+     * Last number
+     */
+    private final int n;
+
+    /**
+     * Semaphore for thread that needs to output zeros
+     */
+    private final Semaphore zero = new Semaphore(1);
+
+    /**
+     * Semaphore for thread that needs to output odd numbers
+     */
+    private final Semaphore odd = new Semaphore(0);
+
+    /**
+     * Semaphore for thread that needs to output even numbers
+     */
+    private final Semaphore even = new Semaphore(0);
 
     public ZeroEvenOdd(int n) {
         this.n = n;

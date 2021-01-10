@@ -1,10 +1,12 @@
 package com.leetcode.concurrency;
 
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * @author 阿尔曼
+ * 1226. The Dining Philosophers
+ * https://leetcode.com/problems/the-dining-philosophers
+ *
+ * @author ARMAN
  */
 public class DiningPhilosophers {
 
@@ -15,6 +17,8 @@ public class DiningPhilosophers {
             new Semaphore(1),
             new Semaphore(1)
     };
+
+    private final Semaphore ownsRightFork = new Semaphore(4);
 
     public DiningPhilosophers() {
 
@@ -27,18 +31,20 @@ public class DiningPhilosophers {
                            Runnable putLeftFork,
                            Runnable putRightFork) throws InterruptedException {
 
+        ownsRightFork.acquire();
         forks[philosopher].acquire();
         pickRightFork.run();
 
-        forks[philosopher == 4 ? 0 : philosopher + 1].acquire();
+        forks[(philosopher + 1) % 5].acquire();
         pickLeftFork.run();
 
         eat.run();
 
         putRightFork.run();
         forks[philosopher].release();
+        ownsRightFork.release();
 
         putLeftFork.run();
-        forks[philosopher == 4 ? 0 : philosopher + 1].release();
+        forks[(philosopher + 1) % 5].release();
     }
 }

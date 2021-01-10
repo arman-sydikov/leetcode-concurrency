@@ -4,7 +4,10 @@ import java.util.concurrent.Semaphore;
 import java.util.function.IntConsumer;
 
 /**
- * @author 阿尔曼
+ * 1195. Fizz Buzz Multithreaded
+ * https://leetcode.com/problems/fizz-buzz-multithreaded
+ *
+ * @author ARMAN
  */
 public class FizzBuzz {
     private int n;
