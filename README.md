@@ -3,7 +3,7 @@ Java solutions to [LeetCode Concurrency](https://leetcode.com/problemset/concurr
 
 | # | Title | Difficulty |
 | --- | --- | --- |
-| 1114 | Print in Order | Easy |
+| 1114 | [Print in Order](src/main/java/com/leetcode/concurrency/Foo.java) | Easy |
 | 1115 | Print FooBar Alternately | Medium |
 | 1116 | Print Zero Even Odd | Medium	 |
 | 1117 | Building H2O | Medium	 |
