@@ -1,5 +1,6 @@
 package com.leetcode.concurrency;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,20 +39,25 @@ public class Solution {
         return new ArrayList<>(set);
     }
 
-    private synchronized void addUrl(String parentUrl, HtmlParser htmlParser, Phaser phaser) {
-        if (!set.contains(parentUrl)) {
+    private void addUrl(String parentUrl, HtmlParser htmlParser, Phaser phaser) {
+        synchronized (this) {
+            if (set.contains(parentUrl)) {
+                return;
+            }
             set.add(parentUrl);
-            phaser.register();
-            // Run htmlParser.getUrls() in a new thread
-            new Thread(() -> {
-                for (String childUrl : htmlParser.getUrls(parentUrl)) {
-                    if (hostName.equals(getHostName(childUrl))) {
-                        addUrl(childUrl, htmlParser, phaser);
-                    }
-                }
-                phaser.arrive();
-            }).start();
         }
+        // Add a new unarrived party to this phaser
+        phaser.register();
+        // Run htmlParser.getUrls() in a new thread
+        new Thread(() -> {
+            for (String childUrl : htmlParser.getUrls(parentUrl)) {
+                if (hostName.equals(getHostName(childUrl))) {
+                    addUrl(childUrl, htmlParser, phaser);
+                }
+            }
+            // Arrive at this phaser
+            phaser.arrive();
+        }).start();
     }
 
     private String getHostName(String url) {
